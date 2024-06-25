@@ -60,7 +60,6 @@ def init_calorie_tracker_data_file():
     daily_calories_struct = {
         'date': datetime.datetime.now().strftime('%Y-%m-%d'),
         'calories_total': 0,
-        'met_goal': False,
         'meals': {
             'breakfast': {'calories': 0},
             'lunch': {'calories': 0},
