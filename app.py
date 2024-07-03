@@ -1,30 +1,31 @@
 from tkinter import *
+from tkinter import scrolledtext
 from globals import *
 from data.dataReadWrite import *
-import json
 
-# Set initial app state
+# views
+from views.main import windows
+
+# Set initial window state
 current_window = 'main'
-
-calorie_tracker_data = globals.calorie_tracker_data
-
-windows = {
-    'main': {
-        'title': 'Home',
-        'widgets': [
-            {'type': 'label', 'text': 'Welcome to the Calorie Counter App!'},
-            {'type': 'button', 'text': 'Enter Calories', 'command': lambda: set_current_window('enter_calories')},
-            {'type': 'button', 'text': 'View Calories', 'command': lambda: set_current_window('list')},
-            {'type': 'button', 'text': 'Preferences', 'command': lambda: set_current_window('preferences')},
-        ]
-    }
-}
 
 root = Tk()
 root.geometry('800x600')
 
+# Create the main container frames
+container = Frame(root)
+container.pack(fill = 'both', expand = True)
+
+# Create the side navigation bar frame
+navbar = Frame(container, bg = 'lightgray', width = 200)
+navbar.pack(side = 'left', fill = 'y')
+
+# Create the main content frame
+main_content = Frame(container, bg = 'white')
+main_content.pack(side = 'right', fill = 'both', expand = True)
+
 def clear_window():
-    for widget in root.winfo_children():
+    for widget in main_content.winfo_children():
         widget.destroy()
 
 def render_widgets(window):
@@ -32,21 +33,46 @@ def render_widgets(window):
     clear_window()
     for widget in windows[window]['widgets']:
         if widget['type'] == 'label':
-            Label(root, text=widget['text']).pack()
+            Label(main_content, text=widget['text']).pack()
         elif widget['type'] == 'button':
-            Button(root, text=widget['text'], command=widget['command']).pack()
+            Button(main_content, text=widget['text'], command = widget['command']).pack()
+        elif widget['type'] == 'scrolledtext':
+            scroll_text = scrolledtext.ScrolledText(main_content, wrap = WORD, width = 50, height = 15)
+            scroll_text.pack(padx = 10, pady = 10)
+            scroll_text.tag_config('header')
+            lines = widget['text'].strip().split('\n')
+            for line in lines:
+                if line.startswith('Header'):
+                    scroll_text.insert(INSERT, line + '\n', 'header')
+                else:
+                    scroll_text.insert(INSERT, line + '\n')
+            scroll_text.config(state = DISABLED)
+        elif widget['type'] == 'calorie_tracker_card':
+            print('Date in rendered card: ', widget['date'])
+            card = Frame(main_content, bg = 'lightgrey', padx = 10, pady = 10)
+            card.pack(fill = 'x', padx = 10, pady = 5)
+            for child in widget['children']:
+                Label(card, text = child['text']).pack(side = 'left')
+            Button(card, text = 'View', command = lambda: print('Searching for: ', widget['date'])).pack(side = 'right')
 
 def set_current_window(window):
     global current_window
     current_window = window
     render_widgets(current_window)
 
-# Initial render
-set_current_window(current_window)
+def create_navbar_buttons():
+    nav_buttons = [
+        {'text': 'Home', 'command': lambda: set_current_window('main')},
+        {'text': 'Enter Calories', 'command': lambda: set_current_window('enter_calories')},
+        {'text': 'View Calories', 'command': lambda: set_current_window('list')},
+        {'text': 'Preferences', 'command': lambda: set_current_window('preferences')},
+        {'text': 'Info', 'command': lambda: set_current_window('info')}
+    ]
+    
+    for btn in nav_buttons:
+        Button(navbar, text = btn['text'], command = btn['command']).pack(fill = 'x', padx = 5, pady = 5)
 
-# Print calorie tracker data for debugging
-for day in calorie_tracker_data:
-    obj_str = json.dumps(day, indent=4)
-    print(obj_str)
+create_navbar_buttons()
+set_current_window(current_window)
 
 root.mainloop()
