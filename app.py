@@ -1,7 +1,11 @@
 from tkinter import *
 from tkinter import scrolledtext
+from tkcalendar import Calendar
+
 from globals import *
 from data.dataReadWrite import *
+
+from datetime import datetime
 
 # views
 from views.main import windows
@@ -31,6 +35,8 @@ def clear_window():
 def render_widgets(window):
     root.title('Calorie Counter App | ' + windows[window]['title'])
     clear_window()
+    if(windows[window].get('update') is not None):
+        windows[window]['update']()
     for widget in windows[window]['widgets']:
         if widget['type'] == 'label':
             Label(main_content, text=widget['text']).pack()
@@ -48,12 +54,14 @@ def render_widgets(window):
                     scroll_text.insert(INSERT, line + '\n')
             scroll_text.config(state = DISABLED)
         elif widget['type'] == 'calorie_tracker_card':
-            print('Date in rendered card: ', widget['date'])
             card = Frame(main_content, bg = 'lightgrey', padx = 10, pady = 10)
             card.pack(fill = 'x', padx = 10, pady = 5)
             for child in widget['children']:
                 Label(card, text = child['text']).pack(side = 'left')
             Button(card, text = 'View', command = lambda: print('Searching for: ', widget['date'])).pack(side = 'right')
+        elif widget['type'] == 'calendar':
+            now = datetime.now()
+            Calendar(main_content, selectmode = 'day', year = now.year, month = now.month, day = now.day).pack(side = 'right')
 
 def set_current_window(window):
     global current_window
@@ -63,8 +71,7 @@ def set_current_window(window):
 def create_navbar_buttons():
     nav_buttons = [
         {'text': 'Home', 'command': lambda: set_current_window('main')},
-        {'text': 'Enter Calories', 'command': lambda: set_current_window('enter_calories')},
-        {'text': 'View Calories', 'command': lambda: set_current_window('list')},
+        {'text': 'Today\'s Calories', 'command': lambda: set_current_window('current_day')},
         {'text': 'Preferences', 'command': lambda: set_current_window('preferences')},
         {'text': 'Info', 'command': lambda: set_current_window('info')}
     ]

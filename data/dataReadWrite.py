@@ -34,17 +34,8 @@ def init_storage():
     init_preferences_file()
     init_calorie_tracker_data_file()
     
-    globals.preferences_data = read_preferences_file()
+    globals.preferences = read_preferences_file()
     globals.calorie_tracker_data = read_calorie_tracker_data_file()
-
-    print('Preferences Data:')
-    print(globals.preferences_data)
-    print(globals.preferences_file_path)
-    print('--------')
-    print('Calorie Tracker Data:')
-    print(globals.calorie_tracker_data)
-    print(globals.calorie_tracker_data_file_path)
-    print('--------')
 
 def init_preferences_file():
     if not check_file_exists(globals.preferences_file_path):
@@ -87,5 +78,9 @@ def read_preferences_file():
 def read_calorie_tracker_data_file():
     with open(globals.calorie_tracker_data_file_path, 'r') as calorie_tracker_data_file:
         return json.load(calorie_tracker_data_file)
+    
+def write_to_preferences(data):
+    with open(globals.preferences_file_path, 'w') as preferences_file:
+        json.dump(data, preferences_file, indent = json_indent)
 
 init_storage()
