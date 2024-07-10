@@ -83,4 +83,40 @@ def write_to_preferences(data):
     with open(globals.preferences_file_path, 'w') as preferences_file:
         json.dump(data, preferences_file, indent = json_indent)
 
+def write_to_calorie_tracker_data(data):
+    success = False
+    if(data['date']):
+        with open(globals.calorie_tracker_data_file_path, 'r') as calorie_tracker_data_file:
+            existing_data = json.load(calorie_tracker_data_file)
+            for i, day in enumerate(existing_data):
+                if day['date'] == data['date']:
+                    existing_data[i] = data
+                    success = True
+                    break
+    return success
+
+def write_to_calorie_tracker_data(data):
+    updated = False
+    if not data.get('date'):
+        return updated
+
+    with open(globals.calorie_tracker_data_file_path, 'r') as calorie_tracker_data_file:
+        existing_data = json.load(calorie_tracker_data_file)
+
+    for i, day in enumerate(existing_data):
+        if day['date'] == data['date']:
+            existing_data[i] = data
+            updated = True
+            break
+
+    if not updated:
+        return False
+
+    with open(globals.calorie_tracker_data_file_path, 'w') as calorie_tracker_data_file:
+        json.dump(existing_data, calorie_tracker_data_file, indent = json_indent)
+
+    globals.calorie_tracker_data = existing_data
+    
+    return updated
+
 init_storage()
