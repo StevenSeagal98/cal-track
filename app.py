@@ -8,7 +8,8 @@ from tkcalendar import Calendar
 import customtkinter
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("blue")
-
+import os
+from PIL import ImageTk, Image
 # end of MAK 7/9/2024
 
 
@@ -31,11 +32,11 @@ container = customtkinter.CTkFrame(root)
 container.pack(fill = 'both', expand = True)
 
 # Create the side navigation bar frame
-navbar = customtkinter.CTkFrame(container, width = 250)
+navbar = customtkinter.CTkFrame(container, corner_radius=0, fg_color="white" ,width = 250)
 navbar.pack(side = 'left', fill = 'y')
 
 # Create the main content frame
-main_content = customtkinter.CTkFrame(container)
+main_content = customtkinter.CTkFrame(container, fg_color="black")
 main_content.pack(side = 'right', fill = 'both', expand = True)
 
 def clear_window():
@@ -49,7 +50,8 @@ def render_widgets(window):
         windows[window]['update']()
     for widget in windows[window]['widgets']:
         if widget['type'] == 'label':
-            customtkinter.CTkLabel(main_content, text=widget['text']).pack()
+            print(widget['text'])
+            customtkinter.CTkLabel(main_content,height=30, corner_radius=5, font=("Arial",20), fg_color="darkgrey", text_color="black",width=250, text=widget['text']).pack(pady=20)
         elif widget['type'] == 'button':
             customtkinter.CTkButton(main_content, text=widget['text'], command = widget['command']).pack()
         elif widget['type'] == 'scrolledtext':
@@ -71,8 +73,8 @@ def render_widgets(window):
             customtkinter.CTkButton(card, text = 'View', command = lambda: print('Searching for: ', widget['date'])).pack(side = 'right')
         elif widget['type'] == 'calendar':
             now = datetime.now()
-            Calendar(main_content, selectmode = 'day', year = now.year, month = now.month, day = now.day).pack(side = 'right')
-
+            Calendar(main_content, selectmode = 'day', year = now.year, month = now.month, day = now.day).pack(side = customtkinter.TOP, pady=30)
+            
 def set_current_window(window):
     global current_window
     current_window = window
@@ -87,8 +89,9 @@ def create_navbar_buttons():
     ]
     
     for btn in nav_buttons:
-        customtkinter.CTkButton(navbar, text = btn['text'], command = btn['command']).pack(fill = 'x', padx = 10, pady = 10)
-       
+        # MAK 7/9/2024
+        customtkinter.CTkButton(navbar, height=40,  fg_color="#13265c", text = btn['text'], command = btn['command']).pack(fill = 'x', padx = 10, pady = 12)
+       # End of MAK changes
 
 create_navbar_buttons()
 set_current_window(current_window)
