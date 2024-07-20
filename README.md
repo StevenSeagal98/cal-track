@@ -48,7 +48,7 @@ There are four windows available in Calorie Tracker which you're able to travers
 - tkcalendar
 
 ### Directories & Files
-- src
+- **src**
     - Contains all source files for the application. Bundled separately to work with build software (PyInstaller)
 
     - **Data**
@@ -62,10 +62,10 @@ There are four windows available in Calorie Tracker which you're able to travers
             - Feeds into *create_widgets* function in *app.py*
         - Contains all data and view logic for each respective view
 
-    - **Globals**
-        - Used to hold app state and other variables needed to run the application
+- **Globals**
+    - Used to hold app state and other variables needed to run the application
 
-    - **app.py**
-        - Contains our *main* module
-        - Holds core view/widget mounting and refresh logic
-        - Creates main window and global widgets, such as the side navigation bar
+- **app.py**
+    - Contains our *main* module
+    - Holds core view/widget mounting and refresh logic
+    - Creates main window and global widgets, such as the side navigation bar
